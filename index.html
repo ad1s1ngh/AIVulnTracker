@@ -5,11 +5,297 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
+  <script>
+
+// ---------- GEOLOCATION ----------
+
+function getLocation(){
+
+if(!navigator.geolocation){
+
+alert("Geolocation not supported");
+return;
+
+}
+
+navigator.geolocation.getCurrentPosition(
+
+(position)=>{
+
+document.getElementById(
+"location"
+).innerHTML=
+
+`
+Latitude:
+${position.coords.latitude}
+
+<br>
+
+Longitude:
+${position.coords.longitude}
+`;
+
+},
+
+()=>{
+
+document.getElementById(
+"location"
+).innerText=
+
+"Permission denied";
+
+}
+
+);
+
+}
+
+
+
+// ---------- LOCAL STORAGE ----------
+
+function saveScan(){
+
+const textarea =
+document.getElementById(
+"scanData"
+);
+
+if(!textarea){
+
+alert(
+"scanData not found"
+);
+
+return;
+
+}
+
+const value =
+textarea.value;
+
+localStorage.setItem(
+"scanNotes",
+value
+);
+
+document.getElementById(
+"saveStatus"
+).innerText=
+
+"Saved successfully";
+
+}
+
+
+
+function loadScan(){
+
+const saved =
+
+localStorage.getItem(
+"scanNotes"
+);
+
+document.getElementById(
+"scanData"
+).value=
+
+saved || "";
+
+document.getElementById(
+"saveStatus"
+).innerText=
+
+saved
+?
+
+"Loaded"
+
+:
+
+"No saved notes";
+
+}
+
+
+
+
+
+// ---------- FILE API ----------
+
+window.onload=()=>{
+
+const fileInput =
+document.getElementById(
+"fileInput"
+);
+
+if(fileInput){
+
+fileInput.addEventListener(
+"change",
+
+function(e){
+
+const file =
+e.target.files[0];
+
+if(!file)
+return;
+
+const reader =
+new FileReader();
+
+reader.onload=
+function(){
+
+document
+.getElementById(
+"fileContent"
+)
+.textContent=
+
+reader.result;
+
+};
+
+reader.readAsText(
+file
+);
+
+}
+
+);
+
+}
+
+
+
+// ---------- DRAG DROP ----------
+
+const zone =
+document.getElementById(
+"dropZone"
+);
+
+if(zone){
+
+zone.addEventListener(
+"dragover",
+(e)=>{
+
+e.preventDefault();
+
+});
+
+zone.addEventListener(
+"drop",
+(e)=>{
+
+e.preventDefault();
+
+const file =
+e.dataTransfer.files[0];
+
+document
+.getElementById(
+"dropResult"
+)
+.innerText=
+
+`Uploaded:
+${file.name}`;
+
+});
+
+}
+
+};
+
+
+
+// ---------- NOTIFICATION ----------
+
+async function showAlert(){
+
+if(
+!("Notification"
+in window)
+){
+
+alert(
+"Notifications unsupported"
+);
+
+return;
+
+}
+
+try{
+
+let permission =
+
+Notification.permission;
+
+if(
+permission!=="granted"
+){
+
+permission=
+
+await Notification
+.requestPermission();
+
+}
+
+if(
+permission==="granted"
+){
+
+new Notification(
+
+"Critical Vulnerability",
+
+{
+
+body:
+"AI Vuln Tracker detected a security event"
+
+}
+
+);
+
+}
+
+else{
+
+alert(
+"Permission denied"
+);
+
+}
+
+}
+
+catch(err){
+
+alert(
+"Run using localhost"
+);
+
+}
+
+}
+
+</script>  
   <title>AI Vuln Tracker</title>
 </head>
 <body>
 <header class="bg-gray-900">
-  <nav aria-label="Global" class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
+<nav aria-label="Global" class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
     <div class="flex lg:flex-1">
       <a href="#" class="-m-1.5 p-1.5">
         <span class="sr-only">Your Company</span>
@@ -124,7 +410,7 @@
         </el-popover>
       </div>
 
-      <a href="#" class="text-sm/6 font-semibold text-white">Features</a>
+      <a href="scan.html" class="text-sm/6 font-semibold text-white">Scan</a>
       <a href="#" class="text-sm/6 font-semibold text-white">How It Works</a>
       <a href="#" class="text-sm/6 font-semibold text-white">About Project</a>
     </el-popover-group>
@@ -168,7 +454,7 @@
                     <a href="#" class="block rounded-lg py-2 pr-3 pl-6 text-sm/7 font-semibold text-white hover:bg-white/5">Project Documentation</a>
                   </el-disclosure>
                 </div>
-                <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Features</a>
+                <a href="scan.html" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Scan</a>
                 <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Marketplace</a>
                 <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">Company</a>
               </div>
@@ -200,7 +486,7 @@
             </div>
             Vulnerability Discovery
           </dt>
-          <dd class="mt-2 text-base/7 text-gray-400">Morbi viverra dui mi arcu sed. Tellus semper adipiscing suspendisse semper morbi. Odio urna massa nunc massa.</dd>
+          <dd class="mt-2 text-base/7 text-gray-400">Find and identify security vulnerabilities across your infrastructure automatically.</dd>
         </div>
         <div class="relative pl-16">
           <dt class="text-base/7 font-semibold text-white">
@@ -233,12 +519,140 @@
             </div>
             Advanced security
           </dt>
-          <dd class="mt-2 text-base/7 text-gray-400">Arcu egestas dolor vel iaculis in ipsum mauris. Tincidunt mattis aliquet hac quis. Id hac maecenas ac donec pharetra eget.</dd>
+          <dd class="mt-2 text-base/7 text-gray-400">Advanced security controls help organizations protect critical assets through continuous monitoring, threat detection, access management, and proactive vulnerability mitigation.</dd>
         </div>
       </dl>
     </div>
   </div>
 </div>
+<!-- HTML5 API Dashboard -->
+<section class="bg-gray-950 py-20">
+<div class="max-w-7xl mx-auto px-6">
+
+<h2 class="text-4xl font-bold text-white text-center mb-12">
+HTML5 API Integration Dashboard
+</h2>
+
+<div class="grid md:grid-cols-2 gap-8">
+
+<!-- GEOLOCATION -->
+<div class="bg-gray-800 p-6 rounded-xl">
+
+<h3 class="text-white text-xl font-bold mb-4">
+📍 Geolocation API
+</h3>
+
+<button
+onclick="getLocation()"
+class="bg-indigo-600 px-5 py-2 rounded text-white">
+
+Detect Location
+
+</button>
+
+<p
+id="location"
+class="text-gray-300 mt-4">
+Waiting...
+</p>
+
+</div>
+
+<!-- LOCAL STORAGE -->
+<div class="bg-gray-800 p-6 rounded-xl">
+
+<h3 class="text-white text-xl font-bold mb-4">
+💾 Save Vulnerability Notes
+</h3>
+
+<textarea
+id="scanData"
+class="w-full p-3 rounded bg-gray-700 text-white"
+rows="5"
+placeholder="Enter findings">
+</textarea>
+
+<div class="mt-4 flex gap-3">
+
+<button
+onclick="saveScan()"
+class="bg-green-600 px-4 py-2 rounded">
+
+Save
+
+</button>
+
+<button
+onclick="loadScan()"
+class="bg-blue-600 px-4 py-2 rounded">
+
+Load
+
+</button>
+
+</div>
+
+</div>
+
+<!-- FILE API -->
+<div class="bg-gray-800 p-6 rounded-xl">
+
+<h3 class="text-white text-xl font-bold mb-4">
+📂 Upload Scan Report
+</h3>
+
+<input
+type="file"
+id="fileInput"
+class="text-white">
+
+<pre
+id="fileContent"
+class="mt-4 text-green-400 overflow-auto">
+</pre>
+
+</div>
+
+<!-- DRAG DROP -->
+<div class="bg-gray-800 p-6 rounded-xl">
+
+<h3 class="text-white text-xl font-bold mb-4">
+📥 Drag & Drop Upload
+</h3>
+
+<div
+id="dropZone"
+class="border-2 border-dashed border-indigo-500 p-10 text-center text-gray-300 rounded">
+
+Drop Report Here
+
+</div>
+
+<p
+id="dropResult"
+class="mt-4 text-green-400">
+</p>
+
+</div>
+
+</div>
+
+<!-- NOTIFICATIONS -->
+
+<div class="text-center mt-12">
+
+<button
+onclick="showAlert()"
+class="bg-red-600 px-8 py-3 rounded text-white">
+
+Enable Security Alert
+
+</button>
+
+</div>
+
+</div>
+</section>
 <footer class="w-full bg-gradient-to-b from-[#1B004D] to-[#2E0A6F] text-white">
     <div class="max-w-7xl mx-auto px-6 py-16 flex flex-col items-center">
         <p class="text-center max-w-xl text-sm font-normal leading-relaxed">
