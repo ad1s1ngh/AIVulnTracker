@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<title>
+AI Executive Summary
+</title>
+
+</head>
+
+<body class="bg-gray-950 text-white min-h-screen">
+
+<!-- NAV -->
+
+<nav class="border-b border-gray-800">
+
+<div class="max-w-7xl mx-auto px-8 py-6 flex justify-between">
+
+<h1
+class="text-3xl font-bold">
+
+AI Vuln Tracker
+
+</h1>
+
+<div class="space-x-8">
+
+<a
+href="#"
+
+class="text-gray-300">
+
+Dashboard
+
+</a>
+
+<a
+href="#"
+
+class="text-indigo-400">
+
+Executive Summary
+
+</a>
+
+</div>
+
+</div>
+
+</nav>
+
+
+
+<!-- HERO -->
+
+<section
+class="max-w-7xl mx-auto px-8 py-16">
+
+<div class="text-center">
+
+<h2
+class="text-5xl font-bold">
+
+AI Executive Risk Summary
+
+</h2>
+
+<p
+class="mt-4 text-gray-400">
+
+Generate stakeholder-ready vulnerability reports
+using Gemini AI
+
+</p>
+
+</div>
+
+
+
+<div
+class="grid lg:grid-cols-2 gap-10 mt-16">
+
+<!-- LEFT -->
+
+<div
+class="bg-gray-900 p-10 rounded-3xl">
+
+<h3
+class="text-2xl mb-8">
+
+Risk Inputs
+
+</h3>
+
+
+
+<label>
+Vulnerability
+</label>
+
+<input
+id="vuln"
+
+class="
+w-full
+mt-2
+mb-6
+p-4
+rounded
+bg-gray-800"
+
+placeholder="Exposed RDP Service">
+
+
+
+<label>
+Likelihood (1–10)
+</label>
+
+<input
+id="likelihood"
+
+type="number"
+
+min="1"
+
+max="10"
+
+class="
+w-full
+mt-2
+mb-6
+p-4
+rounded
+bg-gray-800">
+
+
+
+<label>
+Impact (1–10)
+</label>
+
+<input
+id="impact"
+
+type="number"
+
+min="1"
+
+max="10"
+
+class="
+w-full
+mt-2
+mb-6
+p-4
+rounded
+bg-gray-800">
+
+
+
+<label>
+Additional Notes
+</label>
+
+<textarea
+
+id="notes"
+
+rows="5"
+
+class="
+w-full
+mt-2
+p-4
+rounded
+bg-gray-800"
+
+placeholder="Optional details">
+
+</textarea>
+
+
+
+<button
+
+onclick="generateSummary()"
+
+class="
+w-full
+mt-8
+bg-indigo-600
+hover:bg-indigo-700
+p-4
+rounded-xl">
+
+Generate Executive Summary
+
+</button>
+
+</div>
+
+
+
+<!-- RIGHT -->
+
+<div
+class="
+bg-gradient-to-br
+from-indigo-900
+to-purple-900
+rounded-3xl
+p-10">
+
+<div
+class="flex justify-between">
+
+<h3
+class="text-2xl">
+
+AI Output
+
+</h3>
+
+<div
+id="badge"
+
+class="
+hidden
+bg-red-600
+px-3
+py-1
+rounded">
+
+RISK
+
+</div>
+
+</div>
+
+
+
+<div
+
+id="output"
+
+class="
+mt-8
+whitespace-pre-wrap
+leading-8
+text-gray-100">
+
+Waiting for analysis...
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<script type="module">
+
+import {
+GoogleGenAI
+}
+
+from
+
+"https://esm.run/@google/genai";
+
+
+
+const ai =
+
+new GoogleGenAI({
+
+apiKey:
+"YOUR_GEMINI_API_KEY"
+
+});
+
+
+
+window.generateSummary =
+async function(){
+
+
+
+const vuln =
+
+document
+.getElementById(
+"vuln"
+)
+.value;
+
+
+
+const likelihood =
+
+document
+.getElementById(
+"likelihood"
+)
+.value;
+
+
+
+const impact =
+
+document
+.getElementById(
+"impact"
+)
+.value;
+
+
+
+const notes =
+
+document
+.getElementById(
+"notes"
+)
+.value;
+
+
+
+const output =
+
+document
+.getElementById(
+"output"
+);
+
+
+
+if(
+!vuln||
+!likelihood||
+!impact
+){
+
+output.innerHTML =
+
+"Fill all required fields";
+
+return;
+
+}
+
+
+
+output.innerHTML =
+
+"Generating...";
+
+
+
+const score =
+
+(
+Number(
+likelihood
+)
+
+*
+
+Number(
+impact
+)
+
+);
+
+
+
+document
+.getElementById(
+"badge"
+)
+.classList
+.remove(
+"hidden"
+);
+
+
+
+const prompt = `
+
+You are a Cybersecurity Executive Analyst.
+
+Generate sections:
+
+Executive Summary
+
+Risk Classification
+
+Business Impact
+
+Recommended Actions
+
+Keep it concise and professional
+
+Do not give output in markdown format, just plain text.
+
+Inputs:
+
+Vulnerability:
+${vuln}
+
+Likelihood:
+${likelihood}/10
+
+Impact:
+${impact}/10
+
+Calculated Score:
+${score}/100
+
+Notes:
+${notes}
+
+Use professional executive language.
+
+`;
+
+
+
+try{
+
+
+
+const response =
+
+await ai
+.models
+.generateContent({
+
+model:
+"gemini-2.5-flash",
+
+contents:
+prompt
+
+});
+
+
+
+output.innerHTML =
+
+response.text;
+
+
+
+}
+
+catch(err){
+
+output.innerHTML =
+
+"AI generation failed";
+
+console.log(
+err
+);
+
+}
+
+
+
+};
+
+</script>
+
+</body>
+
+</html>
+```
