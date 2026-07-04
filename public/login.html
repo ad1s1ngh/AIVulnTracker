@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<title>AI Vuln Tracker Login</title>
+</head>
+
+<body class="bg-gray-900 flex justify-center items-center min-h-screen">
+
+<div class="bg-gray-800 p-10 rounded-xl shadow-xl w-full max-w-md">
+
+<h1 class="text-3xl text-white font-bold text-center mb-8">
+AI Vuln Tracker
+</h1>
+
+<form id="loginForm">
+
+<div class="mb-5">
+<label class="text-white">Username</label>
+
+<input
+id="username"
+type="text"
+class="mt-2 w-full rounded-lg p-3 bg-gray-700 text-white"
+required>
+
+</div>
+
+<div class="mb-6">
+
+<label class="text-white">
+Password
+</label>
+
+<input
+id="password"
+type="password"
+class="mt-2 w-full rounded-lg p-3 bg-gray-700 text-white"
+required>
+
+</div>
+
+<button
+class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg">
+
+Login
+
+</button>
+
+<p
+id="message"
+class="mt-5 text-center text-red-400">
+
+</p>
+
+</form>
+
+</div>
+
+<script src="js/login.js"></script>
+
+</body>
+</html>
