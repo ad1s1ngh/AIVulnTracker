@@ -376,7 +376,7 @@ apiKey:"YOUR API KEY"
 
 });
 
-
+ 
 
 window.generateSummary =
 async function(){
@@ -573,6 +573,12 @@ err
 Vulnerability Tracker © 2026
 
 </footer>
+<script>
+if (!localStorage.getItem("loggedIn")) {
+    alert("Please login first.");
+    window.location.href = "login.html";
+}
+</script>
 </body>
 
 </html>

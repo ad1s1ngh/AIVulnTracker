@@ -130,21 +130,24 @@
       <a href="summary.html" class="text-sm/6 font-semibold text-white">AI Summary</a>
     </el-popover-group>
     <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-      <a href="login.html" onclick="logout()" class="text-sm font-semibold text-white">
-Logout →
+    <a id="authBtn" href="login.html" class="text-sm font-semibold text-white">
+    Log in →
 </a>
 
 <script>
+const authBtn = document.getElementById("authBtn");
 
-function logout(){
+if (localStorage.getItem("loggedIn")) {
+    authBtn.innerHTML = "Logout →";
+    authBtn.href = "#";
 
-    localStorage.removeItem("loggedIn");
-
-    window.location.href="login.html";
-
+    authBtn.onclick = function () {
+        localStorage.removeItem("loggedIn");
+        location.reload();
+    };
 }
-
 </script>
+
     </div>
   </nav>
   <el-dialog>
@@ -270,13 +273,4 @@ function logout(){
     </div>
 </footer>
 </body>
-<script>
-
-if(!localStorage.getItem("loggedIn")){
-
-    window.location.href="login.html";
-
-}
-
-</script>
 </html>

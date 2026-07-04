@@ -526,6 +526,12 @@ card.classList.remove(
 
 </script>
 
+<script>
+if (!localStorage.getItem("loggedIn")) {
+    alert("Please login first.");
+    window.location.href = "login.html";
+}
+</script>
 </body>
 
 </html>
